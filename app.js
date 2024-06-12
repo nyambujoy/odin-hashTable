@@ -3,11 +3,13 @@ class HashMap {
         this.table = new Array(size);
         this.size = size
         this.numOfItems = 0
+        this.loadFactor = 0.8
     }
     hash(key) {
         let hashCode = 0
+        let primeNum = 17
         for (let i = 0; i < key.length; i++) {
-            hashCode += key.charCodeAt(i)
+            hashCode = (hashCode * primeNum) + key.charCodeAt(i)
         }
         return hashCode % this.table.length
     }
@@ -22,6 +24,9 @@ class HashMap {
         } else {
             this.table[index].push([key, value])
             this.numOfItems++
+            if (this.numOfItems / this.table.length > this.loadFactor) {
+                this.resize()
+            }
 
         }
 
@@ -94,20 +99,37 @@ class HashMap {
         this.table = new Array(this.size)
         this.numOfItems = 0
     }
+    resize() {
+        const oldTable = this.table
+        // this.size = this.size * 2
+        this.numOfItems = 0
+        this.table = new Array(this.size * 2)
+        for (let i = 0; i < oldTable.length; i++) {
+            if (oldTable[i]) {
+                for (let j = 0; j < oldTable[i].length; j++) {
+                    this.set(oldTable[i][j][0], oldTable[i][j][1])
+                }
+            }
+        }
+    }
 }
 
-const hashTable = new HashMap()
+const hashTable = new HashMap(3)
 hashTable.set('name', 'Joy')
 hashTable.set('age', 23)
+hashTable.set('fruits', 203)
+
+hashTable.set('parents', 1)
+
 hashTable.display()
 // console.log(hashTable.get('name'))
-console.log(hashTable.length())
-console.log(hashTable.keys())
-console.log(hashTable.values())
-console.log(hashTable.remove('age'))
-hashTable.display()
-hashTable.clear()
-hashTable.display()
+// console.log(hashTable.length())
+// console.log(hashTable.keys())
+// console.log(hashTable.values())
+// console.log(hashTable.remove('age'))
+// hashTable.display()
+// hashTable.clear()
+// hashTable.display()
 console.log(hashTable.length())
 
 
